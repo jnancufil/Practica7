@@ -1,0 +1,58 @@
+using System;
+using System.Collections;
+
+namespace ejercicio8
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IEnumerable rango = Rango(6, 30, 3);
+            IEnumerable potencias = Potencias(2, 10);
+            IEnumerable divisibles = DivisiblesPor(rango, 6);
+            foreach (int i in rango)
+                {
+                Console.Write(i + " ");
+                }
+            Console.WriteLine();
+            foreach (int i in potencias)
+                {
+                Console.Write(i + " ");
+                }
+            Console.WriteLine();
+            foreach (int i in divisibles)
+                {
+                Console.Write(i + " ");
+                }
+           // Console.WriteLine("Hello World!");
+            Console.ReadLine();
+        }
+        static IEnumerable Rango (int x, int y, int z){
+	        int i = x; 
+	        while (true){
+		        if (i <= y) {
+                yield return i;
+                i+=z;} 
+		        else yield break; 
+	        }
+        }
+
+        static IEnumerable Potencias( int unNum, int exp){
+	        int result; ; 
+	        for (int i = 1; i <= exp; i++){
+		        result = (int)(Math.Pow((double)unNum, i)); 
+		        yield return result; 
+	        }
+        }
+
+        static IEnumerable DivisiblesPor (IEnumerable x, int y){
+	        IEnumerator aux = x.GetEnumerator(); 
+            int aux2; 
+	        while (aux.MoveNext()){
+                aux2 = ((int)aux.Current % y);
+                //Console.WriteLine(aux2+"Dentro de divisible"); 
+		        if (aux2 == 0) yield return aux.Current;
+	        }
+        } 
+    }
+}
