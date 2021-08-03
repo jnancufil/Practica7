@@ -1,0 +1,143 @@
+using System;
+using System.Collections; 
+
+namespace ejercicio1{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Ejecutar(); 
+           // Console.WriteLine("Hello World!");
+            Console.ReadLine(); 
+        }
+        public static void Ejecutar()
+    {
+        	System.Collections.ArrayList lista = new System.Collections.ArrayList() {
+                new Persona() {Nombre="Ana María"},
+                new Perros() {Nombre="Sultán"},
+                new Persona() {Nombre="Ana"},
+                new Persona() {Nombre="José Carlos"},
+                new Perros() {Nombre="Chopper"}
+            };
+            lista.Sort(new ComparadorLongitudNombre()); //ordena por longitud de Nombre
+            foreach (INombrable n in lista)
+                {
+                Console.WriteLine($"{n.Nombre.Length}: {n.Nombre}");
+                    }
+	}
+}
+    
+    class Autos: IVendible, ILavable, IReciclable, IComercial, IImportante{
+	    public string ID {get;} 
+	    public Autos() => ID = "auto"; 
+	    //public Autos (string unNombre)=> ID = unNombre; 
+	
+	    public void SeVendeA(Persona p)=> Console.WriteLine ($"Vendiendo {this.ID} a {p.Nombre}"); 
+	
+	    public void SeLava() => Console.WriteLine($"Lavando {this.ID}"); 
+	    public void SeSeca() => Console.WriteLine ($"Secando {this.ID}"); 
+	    public void SeRecicla()=> Console.WriteLine ($"Reciclando {this.ID}"); 
+	    void IComercial.Importa()=>Console.WriteLine("Auto que se vende al exterior"); 
+	    void IImportante.Importa()=>Console.WriteLine("Auto importante"); 
+	    public void Importa()=> Console.WriteLine("Metodo Importar() de la clase Auto "); 
+}
+    class Libros: IAlquilable, IReciclable{
+	    public string Titulo {get; }
+	
+	    public Libros()=> Titulo = "Libro"; 
+	    //public Libros (string unTitulo) => Titulo = unTitulo; 
+	    public void SeAlquilaA (Persona p)=> Console.WriteLine($"Alquilando {this.Titulo} a {p.Nombre}"); 
+	    public void Devolucion (Persona p) => Console.WriteLine($"{this.Titulo} devuelto por {p.Nombre}"); 
+	    public void SeRecicla() => Console.WriteLine($"Reciclando {this.Titulo}");  
+}
+    class Peliculas: IAlquilable{
+	    public string Film {get; }
+	    public Peliculas() => Film = "Pelicula"; 
+	    public Peliculas (string unaPeli)=> Film = unaPeli; 
+  
+	    public void SeAlquilaA (Persona p) => Console.WriteLine($"Alquilando {this.Film} a {p.Nombre}"); 
+	    public void Devolucion( Persona p) => Console.WriteLine($"{this.Film} devuelta por {p.Nombre}"); 
+}
+    class Persona:IAtendible,IComercial, IImportante, IComparable, INombrable{
+	    public string Nombre {get; set; }
+	    public Persona(){}
+	
+	    public void Atender() => Console.WriteLine($"Atendiendo {this.Nombre}"); 
+	    void IComercial.Importa()=>Console.WriteLine("Persona vendiendo al exterior"); 
+	    void IImportante.Importa()=>Console.WriteLine("Persona Importante"); 
+	    public void Importa()=>Console.WriteLine ("Metodo Importar() de la clase Persona");
+	    public int CompareTo (object obj){
+		    string st1 = this.Nombre; 
+		    if ((obj as INombrable) == null) return 1; 
+		    return st1.CompareTo((obj as INombrable).Nombre);
+		}
+	    public override string ToString()=> $"{this.Nombre} es una Persona";
+
+}
+    class Perros: IVendible, IAtendible, ILavable, IComparable, INombrable{
+	    public string Nombre {get; set; }
+	    public Perros(){}
+	    public void SeVendeA(Persona p)=> Console.WriteLine($"Vendiendo {this.Nombre} (PERRO) a {p.Nombre}");  
+	    public void Atender()=> Console.WriteLine($"Atendiendo {this.Nombre}"); 
+	    public void SeLava()=> Console.WriteLine($"Lavando {this.Nombre} (Perro)"); 
+	    public void SeSeca()=> Console.WriteLine($"Secando {this.Nombre} (Perro)");
+	    public int CompareTo (object obj){
+		    string st1 = this.Nombre; 
+		    if (((obj as INombrable) == null) || obj is Persona) return 1; 
+		    return st1.CompareTo((obj as INombrable).Nombre);
+		}
+       
+	    public override string ToString() => $"{this.Nombre} es un Perro";
+
+
+} 
+    class ComparadorLongitudNombre: IComparer{
+	    public int Compare(object x, object y){
+		    int uno = (x as INombrable).Nombre.Length; 
+		    if ((y as INombrable) == null) return 1; 
+		    return uno.CompareTo((y as INombrable).Nombre.Length);
+	}
+}
+    class PeliculaClasica: Peliculas, IVendible{
+	//public string NombrePeli {get;}="pelicula clasica";
+	
+
+	public PeliculaClasica(): base("pelicula clasica"){}
+    //public PeliculaClasica(string unTitulo) : base(unTitulo){}
+	public void SeVendeA(Persona p)=> Console.WriteLine ($"Vendiendo {base.Film} a {p.Nombre}"); 
+}
+
+    interface IAlquilable
+	{
+	    public void SeAlquilaA(Persona p); 
+	    public void Devolucion(Persona p); 
+	}
+    interface IVendible{
+	    public void SeVendeA(Persona p); }
+    public interface ILavable {
+	    public void SeLava();
+	    public void SeSeca(); }
+    public interface IReciclable{
+	    public void SeRecicla(); }
+    public interface IAtendible{
+	    public void Atender(); }
+    public interface IComercial{
+	   public void Importa(); }
+    public interface IImportante{
+	   public void Importa(); }
+    public interface INombrable{
+       public string Nombre{get; set; }  }
+
+
+
+    static class Procesador {
+	    public static void Alquilar (IAlquilable x, Persona p) => x.SeAlquilaA(p);
+	    public static void Atender(IAtendible p ) => p.Atender(); 
+	    public static void Devolver(IAlquilable x, Persona p) => x.Devolucion(p); 
+	    public static void Lavar (ILavable x) => x.SeLava(); 
+	    public static void Reciclar(IReciclable z) => z.SeRecicla(); 
+	    public static void Secar (ILavable x) => x.SeSeca(); 
+	    public static void Vender (IVendible x, Persona p)=> x.SeVendeA(p); 
+}
+    
+}
