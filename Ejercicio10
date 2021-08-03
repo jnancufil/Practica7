@@ -1,0 +1,133 @@
+using System;
+using System.Collections;
+using System.IO;
+
+namespace ejercicio10
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine(
+            "MENU DE OPCIONES\n" +
+            "================= \n" +
+            "	1.Ingresar autos desde la consola\n" +
+            "	2.Cargar lista de autos desde el disco \n" +
+            "	3.Guardar lista de autos en el disco \n" +
+            "	4.Lista por consola \n" +
+            "	5.Salir\n" +
+            "\n" );
+
+            Ejecutar();
+            Console.WriteLine();
+            Console.WriteLine("Hello World!");
+            Console.ReadLine();
+        }
+        public static void Ejecutar()
+        {
+            ListaDeAutos unaLista = new ListaDeAutos();
+            ConsoleKeyInfo tecla;
+            do
+            {
+                Console.WriteLine("Ingrese su opcion: ");
+                tecla = Console.ReadKey(true);
+                switch (tecla.KeyChar)
+                {
+                    case '1': unaLista.Opcion1(); break;
+                    case '2': unaLista.Opcion2(); break;
+                    case '3': unaLista.Opcion3(); break;
+                    case '4': unaLista.Opcion4(); break;
+                }
+            } while (tecla.KeyChar != '5');
+            Console.WriteLine("Fuera del swtich - Lista resultado");
+            unaLista.Opcion4(); 
+        }
+    }
+    class Auto
+    {
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+        public Auto() { }
+        public Auto(string unaMarca, string unModelo)
+        {
+            Marca = unaMarca;
+            Modelo = unModelo;
+        }
+        public override string ToString()
+        {
+            return ($"Auto {Modelo}, {Marca}");
+        }
+    }
+
+    class ListaDeAutos
+    {
+        private ArrayList _lista = new ArrayList();
+        private string _modelo;
+        private string _marca;
+
+        //La opción 1 permite al usuario agregar autos a la lista actual en memoria ingresando la marca y el
+        //modelo por la consola. El final de la entrada se detecta al ingresar una marca vacía (sin caracteres)
+
+        public void Opcion1()
+        {
+            Console.WriteLine("Ingrese datos del nuevo auto: ");
+            Console.WriteLine("Marca: ");
+            _marca = Console.ReadLine();
+            while (_marca != "")
+            {
+                Console.WriteLine("Modelo: ");
+                _modelo = Console.ReadLine();
+                _lista.Add(new Auto(_marca, _modelo));
+                Console.WriteLine("Ingrese datos del nuevo auto: ");
+                Console.WriteLine("Marca: ");
+                _marca = Console.ReadLine();
+            }
+            Console.WriteLine("Fin de carga de datos.-  "); 
+        }
+        //La opción 2, carga en memoria una lista de autos previamente guardada en algún archivo de texto.
+
+        public void Opcion2()
+        {
+            StreamReader sr = new StreamReader("datosAutos.txt");
+
+            while (!sr.EndOfStream)
+            {
+                _marca = sr.ReadLine();
+                _modelo = sr.ReadLine();
+                _lista.Add(new Auto(_marca, _modelo));
+            }
+            Console.WriteLine("Lista de autos importada.-"); 
+        }
+        /**La opción 3 guarda en un archivo de texto la lista actual en memoria. Se puede implementar de
+infinidad de maneras, por ejemplo se podría guardar cada auto en dos líneas consecutivas, la primera
+para la marca y la segunda para el modelo**/
+
+        public void Opcion3()
+        {
+
+            StreamWriter sw = new StreamWriter("archivoDestino.txt");
+
+            foreach (Auto a in _lista)
+            {
+                _marca = a.Marca;
+                _modelo = a.Modelo;
+                sw.WriteLine(_marca);
+                sw.WriteLine(_modelo);
+            }
+            Console.WriteLine("Lista de autos exportada.-"); 
+        }
+        //La opción 4 produce un listado por consola de todos los autos en la lista actual en memoria
+
+        public void Opcion4()
+        {
+            foreach (Auto a in _lista)
+            {
+                Console.WriteLine(a.ToString());
+            }
+
+        }
+
+
+    }//LISTAaUTOS
+
+}
