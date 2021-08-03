@@ -1,0 +1,119 @@
+using System;
+
+namespace ejercicio1{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Ejecutar(); 
+            Console.WriteLine("Hello World!");
+            Console.ReadLine(); 
+        }
+        public static void Ejecutar()
+    {
+        Autos auto = new Autos();
+        Libros libro = new Libros();
+        Persona persona = new Persona();
+        Perros perro = new Perros();
+        Peliculas pelicula = new Peliculas();
+        Procesador.Alquilar(pelicula, persona);
+        Procesador.Alquilar(libro, persona);
+        Procesador.Atender(persona);
+        Procesador.Atender(perro);
+        Procesador.Devolver(pelicula, persona);
+        Procesador.Devolver(libro, persona);
+        Procesador.Lavar(auto);
+        Procesador.Reciclar(libro);
+        Procesador.Reciclar(auto);
+        Procesador.Secar(auto);
+        Procesador.Vender(auto, persona);
+        Procesador.Vender(perro, persona);
+        Procesador.Lavar(perro);
+        Procesador.Secar(perro);
+        PeliculaClasica peliculaClasica = new PeliculaClasica();
+        Procesador.Alquilar(peliculaClasica, persona);
+        Procesador.Devolver(peliculaClasica, persona);
+        Procesador.Vender(peliculaClasica, persona);
+}
+}
+    
+    class Autos: IVendible, ILavable, IReciclable{
+	    public string ID {get;} 
+	    public Autos() => ID = "auto"; 
+	    //public Autos (string unNombre)=> ID = unNombre; 
+	
+	    public void SeVendeA(Persona p)=> Console.WriteLine ($"Vendiendo {this.ID} a {p.Nombre}\n"); 
+	
+	    public void SeLava() => Console.WriteLine($"Lavando {this.ID}\n"); 
+	    public void SeSeca() => Console.WriteLine ($"Secando {this.ID}\n"); 
+	    public void SeRecicla()=> Console.WriteLine ($"Reciclando {this.ID}\n"); 
+}
+    class Libros: IAlquilable, IReciclable{
+	    public string Titulo {get; }
+	
+	    public Libros()=> Titulo = "Libro"; 
+	    //public Libros (string unTitulo) => Titulo = unTitulo; 
+	    public void SeAlquilaA (Persona p)=> Console.WriteLine($"Alquilando {this.Titulo} a {p.Nombre}\n"); 
+	    public void Devolucion (Persona p) => Console.WriteLine($"{this.Titulo} devuelto por {p.Nombre}\n"); 
+	    public void SeRecicla() => Console.WriteLine($"Reciclando {this.Titulo}\n");  
+}
+    class Peliculas: IAlquilable{
+	    public string Film {get; }
+	    public Peliculas() => Film = "Pelicula"; 
+	    public Peliculas (string unaPeli)=> Film = unaPeli; 
+  
+	    public void SeAlquilaA (Persona p) => Console.WriteLine($"Alquilando {this.Film} a {p.Nombre}\n"); 
+	    public void Devolucion( Persona p) => Console.WriteLine($"{this.Film} devuelta por {p.Nombre}\n"); 
+}
+    class Persona:IAtendible{
+	    public string Nombre {get; }
+	    public Persona() => Nombre = "persona"; 
+	
+	    public void Atender() => Console.WriteLine($"Atendiendo {this.Nombre}\n"); 
+
+}
+    class Perros: IVendible, IAtendible, ILavable{
+	    public string Name {get; }
+	    public Perros() => Name = "Chibi"; 
+	    public void SeVendeA(Persona p)=> Console.WriteLine($"Vendiendo {this.Name} (PERRO) a {p.Nombre}\n");  
+	    public void Atender()=> Console.WriteLine($"Atendiendo {this.Name}\n"); 
+	    public void SeLava()=> Console.WriteLine($"Lavando {this.Name} (Perro) \n"); 
+	    public void SeSeca()=> Console.WriteLine($"Secando {this.Name} (Perro) \n");
+
+} 
+    class PeliculaClasica: Peliculas, IVendible{
+	//public string NombrePeli {get;}="pelicula clasica";
+	
+
+	public PeliculaClasica(): base("pelicula clasica"){}
+    //public PeliculaClasica(string unTitulo) : base(unTitulo){}
+	public void SeVendeA(Persona p)=> Console.WriteLine ($"Vendiendo {base.Film} a {p.Nombre}\n"); 
+}
+
+    interface IAlquilable
+	{
+	    public void SeAlquilaA(Persona p); 
+	    public void Devolucion(Persona p); 
+	}
+    interface IVendible{
+	    public void SeVendeA(Persona p); }
+    public interface ILavable {
+	    public void SeLava();
+	    public void SeSeca(); }
+    public interface IReciclable{
+	    public void SeRecicla(); }
+    public interface IAtendible{
+	    public void Atender(); }
+
+
+    static class Procesador {
+	    public static void Alquilar (IAlquilable x, Persona p) => x.SeAlquilaA(p);
+	    public static void Atender(IAtendible p ) => p.Atender(); 
+	    public static void Devolver(IAlquilable x, Persona p) => x.Devolucion(p); 
+	    public static void Lavar (ILavable x) => x.SeLava(); 
+	    public static void Reciclar(IReciclable z) => z.SeRecicla(); 
+	    public static void Secar (ILavable x) => x.SeSeca(); 
+	    public static void Vender (IVendible x, Persona p)=> x.SeVendeA(p); 
+}
+    
+}
